@@ -1,4 +1,4 @@
-🥗 CHIGGAS AND WHITEBOYS MEALPLAN
+🥗 GYM MEALPLAN
 A high-performance, interactive nutrition plan specifically developed for athletes and teams. This app helps to precisely plan nutrition, automatically scale quantities, and organize grocery shopping efficiently.
 
 🚀 Features
@@ -27,7 +27,7 @@ Framer Motion (Animations)
 
 📦 Installation & Start
 Clone repository:
-git clone https://github.com/your-username/meal-plan.git
+git clone https://github.com/F14v1o/gym-mealplan.git
 
 Install dependencies:
 npm install

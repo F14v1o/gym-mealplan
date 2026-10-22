@@ -644,7 +644,7 @@ async function scrapeMigros() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function main() {
-  console.log('🛒 Chiggas Mealplan — Deal Scraper v2');
+  console.log('🛒 Gym Mealplan — Deal Scraper v2');
   console.log(`📅 ${new Date().toISOString()}`);
   console.log('─'.repeat(50));
 

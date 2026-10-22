@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 // LocalStorage Helper: Einstellungen pro Browser/User persistent speichern
-const STORAGE_KEY = 'chiggas-mealplan-settings';
+const STORAGE_KEY = 'gym-mealplan-settings';
 
 const loadSettings = () => {
   try {
@@ -49,15 +49,15 @@ const App = () => {
   const [activeTab, setActiveTab] = useState(saved?.activeTab ?? 'mon'); 
   const [activePlan, setActivePlan] = useState(saved?.activePlan ?? 1);
   const [bulkingMode, setBulkingMode] = useState(saved?.bulkingMode ?? false);
-  const [jamainMode, setJamainMode] = useState(saved?.jamainMode ?? false);
+  const [noPorkMode, setNoPorkMode] = useState(saved?.noPorkMode ?? false);
   const [breakfastMode, setBreakfastMode] = useState(saved?.breakfastMode ?? false);
   const [deals, setDeals] = useState([]);
   const [showDeals, setShowDeals] = useState(false);
 
   // Einstellungen bei Änderung speichern
   useEffect(() => {
-    saveSettings({ servings, activeTab, activePlan, bulkingMode, jamainMode, breakfastMode });
-  }, [servings, activeTab, activePlan, bulkingMode, jamainMode, breakfastMode]);
+    saveSettings({ servings, activeTab, activePlan, bulkingMode, noPorkMode, breakfastMode });
+  }, [servings, activeTab, activePlan, bulkingMode, noPorkMode, breakfastMode]);
 
   // Deals von Migros/Denner laden
   useEffect(() => {
@@ -89,7 +89,7 @@ const App = () => {
     fetchDeals();
   }, []);
 
-  const profileName = "Chiggas and White's";
+  const profileName = "Gym Crew";
   
   // Gemeinsame Protein-Quellen (Thunfisch hinzugefügt)
   const fishOptions = "Lachs, Weissfisch oder Thunfisch";
@@ -125,9 +125,9 @@ const App = () => {
     ]
   };
 
-  // Jamain-Modus: Schweinefleisch durch Poulet ersetzen
+  // Ohne-Schwein-Modus: Schweinefleisch durch Poulet ersetzen
   const effectivePlanData = (() => {
-    if (!jamainMode) return planData;
+    if (!noPorkMode) return planData;
     const modified = {};
     for (const [key, days] of Object.entries(planData)) {
       modified[key] = days.map(day => {
@@ -243,11 +243,11 @@ const App = () => {
   // Bulking-Faktor: 1.5x Portionen → 2910–3185 kcal ohne Frühstück, ~3460–3735 mit Frühstück
   const bulkFactor = bulkingMode ? 1.5 : 1;
 
-  // Jamain-Modus: Schwein aus Einkaufsliste entfernen, Poulet-Menge erhöhen
+  // Ohne-Schwein-Modus: Schwein aus Einkaufsliste entfernen, Poulet-Menge erhöhen
   // Frühstück-Modus: Frühstücks-Items zur Liste hinzufügen
   const effectiveShoppingWeekly = (() => {
     let list = [...shoppingWeekly];
-    if (jamainMode) {
+    if (noPorkMode) {
       const porkItem = list.find(i => i.item.toLowerCase().includes('schwein'));
       list = list.filter(i => !i.item.toLowerCase().includes('schwein'));
       if (porkItem) {
@@ -639,20 +639,20 @@ const App = () => {
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${breakfastMode ? 'left-[22px]' : 'left-[2px]'}`}></div>
               </div>
             </button>
-            {/* Jamain Modus Toggle (kein Schweinefleisch) */}
+            {/* Ohne-Schwein-Toggle */}
             <button 
-              onClick={() => setJamainMode(!jamainMode)}
-              className={`p-3 rounded-2xl flex items-center gap-3 justify-between transition-all ${jamainMode ? 'bg-indigo-500/20 border border-indigo-400/40' : 'bg-white/10 border border-white/20'}`}
+              onClick={() => setNoPorkMode(!noPorkMode)}
+              className={`p-3 rounded-2xl flex items-center gap-3 justify-between transition-all ${noPorkMode ? 'bg-indigo-500/20 border border-indigo-400/40' : 'bg-white/10 border border-white/20'}`}
             >
               <div className="flex items-center gap-2">
-                <User size={18} className={jamainMode ? 'text-indigo-400' : 'text-slate-400'} />
+                <User size={18} className={noPorkMode ? 'text-indigo-400' : 'text-slate-400'} />
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider block">Jamain</span>
-                  {jamainMode && <span className="text-[8px] text-indigo-300 font-bold uppercase">Kein Schweinefleisch</span>}
+                  <span className="text-xs font-bold uppercase tracking-wider block">Ohne Schwein</span>
+                  {noPorkMode && <span className="text-[8px] text-indigo-300 font-bold uppercase">Kein Schweinefleisch</span>}
                 </div>
               </div>
-              <div className={`w-10 h-5 rounded-full relative transition-all ${jamainMode ? 'bg-indigo-500' : 'bg-white/20'}`}>
-                <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${jamainMode ? 'left-[22px]' : 'left-[2px]'}`}></div>
+              <div className={`w-10 h-5 rounded-full relative transition-all ${noPorkMode ? 'bg-indigo-500' : 'bg-white/20'}`}>
+                <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all ${noPorkMode ? 'left-[22px]' : 'left-[2px]'}`}></div>
               </div>
             </button>
           </div>
@@ -1024,8 +1024,8 @@ const App = () => {
           <div>
             <h4 className="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-1">Variation & Info</h4>
             <p className="text-[11px] text-slate-500 leading-relaxed">
-              {jamainMode ? (
-                <>Die Pläne 1-3 nutzen die exakt gleichen Proteine und Carbs. Proteinquellen: Rind, Poulet & Fisch. <span className="text-indigo-600 font-bold">Jamain-Modus aktiv:</span> Alle Schweinefleisch-Gerichte wurden durch Poulet ersetzt. Du kannst Fleisch/Fisch jederzeit untereinander tauschen, solange die Menge gleich bleibt.</>
+              {noPorkMode ? (
+                <>Die Pläne 1-3 nutzen die exakt gleichen Proteine und Carbs. Proteinquellen: Rind, Poulet & Fisch. <span className="text-indigo-600 font-bold">Ohne-Schwein-Modus aktiv:</span> Alle Schweinefleisch-Gerichte wurden durch Poulet ersetzt. Du kannst Fleisch/Fisch jederzeit untereinander tauschen, solange die Menge gleich bleibt.</>
               ) : (
                 <>Die Pläne 1-3 nutzen die exakt gleichen Proteine und Carbs. Proteinquellen: Rind, Schwein, Poulet & Fisch. <span className="text-slate-900 font-bold">Tipp:</span> Schweinsnierstücke sind Top für B1 (Thiamin) und günstiger als Rind. Du kannst Fleisch/Fisch jederzeit untereinander tauschen, solange die Menge gleich bleibt.</>
               )}
@@ -1035,7 +1035,7 @@ const App = () => {
       </main>
 
       <footer className="text-center mt-8 text-slate-400 text-[10px] font-bold uppercase tracking-widest pb-10">
-        <p>Built for Jill // v3.0 Multi-Plan</p>
+        <p>v3.0 Multi-Plan</p>
       </footer>
 
       {/* Deals Popup */}
